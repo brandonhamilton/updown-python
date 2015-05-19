@@ -1,6 +1,6 @@
 # Updown
 
-A Python wrapper and CLI for the [updown.io](https://updown.io) API
+A Python wrapper for the [updown.io](https://updown.io) API
 
 ## Installation
 
