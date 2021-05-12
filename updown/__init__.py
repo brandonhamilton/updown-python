@@ -63,7 +63,7 @@ class Check:
     @staticmethod
     def _fromObject(obj):
         c = Check(obj['url'])
-        for attr, value in obj.iteritems():
+        for attr, value in obj.items():
             setattr(c, attr, value)
         return c
 
@@ -73,11 +73,11 @@ class Check:
     def sync(self):
         if self.token:
             r = _performRequest('PUT', uri='/' + self.token, data=self._toObject())
-            for attr, value in r.iteritems():
+            for attr, value in r.items():
                 setattr(self, attr, value)
         else:
             r = _performRequest('POST', data=self._toObject())
-            for attr, value in r.iteritems():
+            for attr, value in r.items():
                 setattr(self, attr, value)
 
     def delete(self):
