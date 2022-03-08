@@ -68,7 +68,15 @@ class Check:
         return c
 
     def _toObject(self):
-        return { attr: getattr(self, attr) for attr in dir(self) if not callable(getattr(self,attr)) and not attr.startswith("__") }
+        object = {}
+        for attr in dir(self):
+            if not callable(getattr(self, attr)) and not attr.startswith("__"):
+                # Add lists with [] in their name
+                if isinstance(getattr(self, attr), list):
+                    object[f'{attr}[]'] = getattr(self, attr)
+                else:
+                    object[attr] = getattr(self, attr)
+        return object
 
     def sync(self):
         if self.token:
