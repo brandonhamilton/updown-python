@@ -67,23 +67,37 @@ class Check:
             setattr(c, attr, value)
         return c
 
-    def _toObject(self):
-        object = {}
+    def _toObject(self, exclude_fields=None):
+        ret = {}
         for attr in dir(self):
             if not callable(getattr(self, attr)) and not attr.startswith("__"):
                 # Add lists with [] in their name
                 if isinstance(getattr(self, attr), list):
-                    object[f'{attr}[]'] = getattr(self, attr)
+                    ret[f'{attr}[]'] = getattr(self, attr)
                 else:
-                    object[attr] = getattr(self, attr)
-        return object
+                    ret[attr] = getattr(self, attr)
 
-    def sync(self):
+        if exclude_fields:
+            for field_name in exclude_fields:
+                ret.pop(field_name, None)
+
+        return ret
+
+    def sync(self, exclude_fields=None):
+        # NOTE: We introduced this 'exclude_fields' parameter
+        #       because the updown api does not return the secrets (from security reasons)
+        #       from url like: https://user:password@hostname
+        #       In case of put we don't want to overwrite the url parameter
+        #       with the 'secret-less' version.
+        #       More about the optional fields:
+        #           https://updown.io/api#PUT-/api/checks/:token
         if self.token:
-            r = _performRequest('PUT', uri='/' + self.token, data=self._toObject())
+            # update case
+            r = _performRequest('PUT', uri='/' + self.token, data=self._toObject(exclude_fields))
             for attr, value in r.items():
                 setattr(self, attr, value)
         else:
+            # create case
             r = _performRequest('POST', data=self._toObject())
             for attr, value in r.items():
                 setattr(self, attr, value)
