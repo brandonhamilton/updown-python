@@ -29,10 +29,8 @@ try:
 except ImportError:
     from distutils.core import setup
 
-import updown
-
 setup(name='updown',
-      version = updown.__version__,
+      version = '0.2.0',
       description='3rd-party Python interface to Updown.io API',
       author='Brandon Hamilton',
       author_email='brandon.hamilton@gmail.com',
